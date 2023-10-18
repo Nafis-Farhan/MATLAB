@@ -22,5 +22,5 @@ fs = n/.5;
 plot(ax(1),t,x(:,1),'color','blue','marker','.');
 plot(ax(2),t,x(:,2),'color','blue','marker','.');
 plot(ax(3),t,abs(fft(x(:,1))),'color','blue','marker','.');
-%fs=length(t);
-%sound(x(:,1),fs)
+fs=length(t);
+sound(x(:,1),fs)
