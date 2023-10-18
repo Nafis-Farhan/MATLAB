@@ -12,3 +12,7 @@ for i=1:N-1
     x(i+1,1) = x(i,1)+((t(i+1)-t(i))*(x_old(1)-x(i,1))/(t_old-t(i)));
     x(i+1,2) = x(i,2)+((t(i+1)-t(i))*(x_old(2)-x(i,2))/(t_old-t(i)));
 end
+
+plot(t,x(:,1))
+
+%sound(x(:,1),1/dt)
