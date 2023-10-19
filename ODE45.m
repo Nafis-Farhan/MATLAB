@@ -1,5 +1,5 @@
 %ode45 solver
-[t,x] = ode113(@(t,x) model(t,x,.36),[0 .5],[0; 0]);
+[t,x] = ode113(@(t,x) model(t,x,.42),[0 .5],[0; 0]);
 
 %ploting
 figure;
@@ -13,7 +13,7 @@ hold on
 xlabel ('t');
 ylabel ('y');
 n=length(t);
-fs = n/.5;
-plot(ax(1),t,x(:,1),'color','blue','marker','.');
-plot(ax(2),t,x(:,2),'color','blue','marker','.');fs=length(t);
+plot(ax(1),t,x(:,1),'color','blue','marker','.')
+plot(ax(2),t,x(:,2),'color','blue','marker','.')
+fs=length(t);
 sound(x(:,1),fs)
