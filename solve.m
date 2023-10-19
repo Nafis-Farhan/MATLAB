@@ -15,9 +15,9 @@ j=2;
 x_new(1)=x(1,1);
 for i=1:N-1
     if  j < n && t_new(i)>t(j) 
-        j=j+i;
+        j=j+1;
     end
-
+    j
     x_new(i+1) = x_new(i) + ((x(j,1)-x(j-1,1))/(t(j)-t(j-1)))*(t_new(i+1)-t_new(i));
         
 end
