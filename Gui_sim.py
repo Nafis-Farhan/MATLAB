@@ -1,9 +1,7 @@
 import tkinter as tk
-from tkinter import messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
-from scipy import interpolate
 from scipy.integrate import odeint
 from scipy.fft import fft, fftfreq
 import matplotlib.gridspec as gridspec
@@ -14,7 +12,6 @@ class DataPointInputGUI:
         self.master.title("Data Point Input")
 
         self.fig= plt.figure()
-        #self.ax1.set(xlable='P',ylabel='K')
         self.gs = gridspec.GridSpec(8,8)
         self.ax1 = plt.subplot(self.gs[:4, :])
         self.ax2 = plt.subplot(self.gs[5:6, :])
@@ -27,11 +24,7 @@ class DataPointInputGUI:
         self.point = []
         self.ax1.scatter([], [], color='blue')
 
-        #self.ax2.set(xlable='Time',ylabel='Amplitude')
         self.ax2.set_title('Waveform')
-
-
-        #self.ax3.set(xlable='requency (Hz)',ylabel='Amplitude')
         self.ax3.set_title('FFT')
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=master)
@@ -40,19 +33,15 @@ class DataPointInputGUI:
 
         self.cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
-        self.button_simulate = tk.Button(master, text="Run Simulation", command=self.simulate)
-        self.button_simulate.pack(side=tk.BOTTOM)
-
     def onclick(self, event):
         if event.inaxes == self.ax1:
             x = event.xdata
             y = event.ydata
             self.point = (x,y)
-            #self.points.append((x, y))
             self.update_plot()
+            self.simulate()
 
     def update_plot(self):
-        #self.ax1.set(xlable='P',ylabel='K')
         self.ax1.clear()
         self.ax1.set_title('P vs K')
         self.ax1.set_xlim(-1000, 3000)
@@ -67,32 +56,25 @@ class DataPointInputGUI:
         P = self.point[0]
         t, song = self.singSyllable(K, P)
 
-        # Plot wave
         self.ax2.clear()
         self.ax3.clear()
         self.ax3.set_ylim(0 ,.009)
         self.ax2.plot(t, song)
-        #self.ax2.set(xlable='Time',ylabel='Amplitude')
         self.ax2.set_title('Waveform')
 
-        # Calculate FFT
         Fs = 22050
         s_fft = fft(song)
         t_fft = fftfreq(len(t), 1/Fs)[0:len(t)//2]
 
-        # Plot FFT
         self.ax3.plot(t_fft, 2.0/len(t) * np.abs(s_fft[0:len(t)//2]))
-        #self.ax3.set(xlable='requency (Hz)',ylabel='Amplitude')
         self.ax3.set_title('FFT')
 
         self.canvas.draw()
-        
 
     def singSyllable(self, K, P):
-        Fs = 22050  # sampling frequency
-        t = np.arange(0, 0.24, 1/Fs)  # time sample points
+        Fs = 22050  
+        t = np.arange(0, 0.24, 1/Fs)  
 
-        # main diff equation
         def syrinx(y, t, K, P):
             b = 1000
             d = 10**8
@@ -101,20 +83,17 @@ class DataPointInputGUI:
             yprime[1] = (P - b) * y[1] - K * y[0] - d * (y[0]**2) * y[1]
             return yprime
 
-        # init condition
         y0 = [0.01, 0.01]
 
-        # ode solver
         z = odeint(syrinx, y0, t, args=(K, P,))
         song = z[:, 0]
 
         return t, song
 
-
 def main():
     root = tk.Tk()
     app = DataPointInputGUI(root)
-    root.mainloop()
+    root.mainloop()  # Start the Tkinter event loop
 
 if __name__ == "__main__":
     main()
